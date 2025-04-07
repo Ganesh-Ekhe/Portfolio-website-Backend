@@ -16,15 +16,28 @@ import skillsRoutes from "./routes/skillsRoutes.js";
 dotenv.config();
 const app = express();
 
-// ✅ CORS Configuration (Vercel + Local)
+// ✅ Proper CORS Configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://portfolio-website-frontend-lusb.vercel.app"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://portfolio-website-frontend-lusb.vercel.app" // Vercel frontend URL
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  origin: function (origin, callback) {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
 }));
+
+// ✅ Handle Preflight Requests for all routes
+app.options("*", cors());
 
 // ✅ Middleware
 app.use(express.json());
