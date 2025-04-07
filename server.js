@@ -10,14 +10,18 @@ import contactRoutes from "./routes/contactRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
-import aboutRoutes from "./routes/aboutRoutes.js";        // ✅ Added
+import aboutRoutes from "./routes/aboutRoutes.js";
 import skillsRoutes from "./routes/skillsRoutes.js";
+
 dotenv.config();
 const app = express();
 
-// ✅ CORS Configuration (Local Dev Only)
+// ✅ CORS Configuration (Vercel + Local)
 app.use(cors({
-  origin: ["http://localhost:5173"], // Render link हटवली
+  origin: [
+    "http://localhost:5173",
+    "https://portfolio-website-frontend-lusb.vercel.app" // Vercel frontend URL
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -35,14 +39,13 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/about", aboutRoutes);           // ✅ Active route
-app.use("/api/skills", skillsRoutes);         // ✅ Active route
-
+app.use("/api/about", aboutRoutes);
+app.use("/api/skills", skillsRoutes);
 
 // ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("✅ MongoDB Connected"))
-.catch(err => console.error("❌ MongoDB Connection Error:", err));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5100;
